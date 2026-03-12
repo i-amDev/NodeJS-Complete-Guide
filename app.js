@@ -21,12 +21,22 @@ const server = http.createServer((request, response) => {
     }
 
     if (url === '/message' && method === 'POST') {
-        fs.writeFileSync('message.txt', 'DUMMY');
+        const body = [];
+        request.on('data', (chunk) => {
+            console.log(chunk);
+            body.push(chunk);
+        });
+        request.on('end', () => {
+            const parsedBody = Buffer.concat(body).toString();
+            const message = parsedBody.split('=')[1];
+            fs.writeFileSync('message.txt', message);
+        });
+
         response.statusCode = 302;
         response.setHeader('Location', '/');
         return response.end();
     }
-    
+
     response.setHeader('Content-Type', 'text/html');
     response.write('<html>');
     response.write('<head><title>My First Page</title></head>');
