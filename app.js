@@ -26,7 +26,7 @@ const server = http.createServer((request, response) => {
             console.log(chunk);
             body.push(chunk);
         });
-        request.on('end', () => {
+        return request.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
             const message = parsedBody.split('=')[1];
             fs.writeFile('message.txt', message, error => {
