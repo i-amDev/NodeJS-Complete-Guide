@@ -29,10 +29,11 @@ const server = http.createServer((request, response) => {
         request.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
             const message = parsedBody.split('=')[1];
-            fs.writeFileSync('message.txt', message);
-            response.statusCode = 302;
-            response.setHeader('Location', '/');
-            return response.end();
+            fs.writeFile('message.txt', message, error => {
+                response.statusCode = 302;
+                response.setHeader('Location', '/');
+                return response.end();
+            });
         });
     }
 
